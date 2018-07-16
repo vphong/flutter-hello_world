@@ -10,16 +10,9 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Welcome to Flutter',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Welcome to Flutter'),
-        ),
-        body: Center(
-          child: RandomWords(),
-        ),
-      ),
+    return new MaterialApp(
+      title: 'Startup Name Generator',
+      home: new RandomWords(),
     );
   }
 }
@@ -32,15 +25,62 @@ class MyApp extends StatelessWidget {
  *  1. StatefulWidget that makes an instance of
  *  2. a State class.
  */
+
 class RandomWords extends StatefulWidget {
   @override
-  createState() => RandomWordsState();
+  createState() => new RandomWordsState();
 }
 
+/**
+ * Class: RandomWordsState
+ *  Saves:
+ *    1) generated WordPairs, created as user infinitely scrolls
+ *    2) favorited WordPairs, as user adds or removes them by toggling heart icon
+ * 
+ */
 class RandomWordsState extends State<RandomWords> {
+
+  // prefixing identifier with underscore enforces privacy in Dart
+  final _suggestions = <WordPair>[];
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
   @override
+  /** Basic build method that generates WordPairs.  */
   Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
-    return Text(wordPair.asPascalCase);
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Startup Name Generator"),
+      ),
+      body: _buildSuggestions(),
+    );
+  }
+
+  /** Builds ListView that displays suggested word pairing. */
+  Widget _buildSuggestions() {
+    return new ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemBuilder: (context, i) {
+        if (i.isOdd) return new Divider();
+
+        final index = i ~/ 2; // ~- integer division
+
+        // if reached end of available pairings
+        if (index >= _suggestions.length) {
+          // generate 10 more
+          _suggestions.addAll(generateWordPairs().take(10));
+        }
+
+        return _buildRow(_suggestions[index]);
+      },
+    );
+  }
+
+  Widget _buildRow(WordPair pair) {
+    return new ListTile(
+      title: new Text(
+        pair.asPascalCase,
+        style: _biggerFont,
+      ),
+    );
   }
 }
