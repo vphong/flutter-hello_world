@@ -1,6 +1,6 @@
 # hello_world
 
-A new Flutter project.
+A new Flutter project, following [https://flutter.io/get-started/codelab/](Flutter: Write Your First Flutter App).
 
 ## Getting Started
 
